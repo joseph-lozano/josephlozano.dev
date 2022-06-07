@@ -7,7 +7,7 @@ _Part 1 in the Phoenix SaaS series_
 
 # Speedrunning a Phoenix Elixir Deployment to production (without a PaaS)
 
-There are many great Platform as a Service (PaaS) providers for Phoenix. [Render](https://render.com), and [Fly.io](https://fly.io) especially, and they have great documentation for getting up and running. PaaS providers have lots of benefits, including ease of deployments, managed database with automatic backups, and more. But using a plain VPS can get you more power or a lot less money. This is especailly true if you are running multiple apps.
+There are many great Platform as a Service (PaaS) providers for Phoenix. [Render](https://render.com/docs/deploy-phoenix), and [Fly.io](https://fly.io/docs/getting-started/elixir/) especially, and they have great documentation for getting up and running. PaaS providers have lots of benefits, including ease of deployments, managed databases with automatic backups, and more. But using a plain Virtual Private Server (VPS) can get you more power for a lot less money. This is especailly true if you are running multiple apps.
 
 In this post, we are going to go from (almost) zero to deployment using Hetzner, but you can follow along using other cloud providers, such as [Linode](https://linode.com), [Digital Ocean](https://digitalocean.com), or even AWS or GCP. I chose Hetzner for their great reviews, and low price.
 
@@ -18,11 +18,12 @@ I am assuming familiarity with the command line and git. If you get stuck at poi
 Create an account at https://cloud.hetzner.com, and create a server in a region near you. I chose Ashburn, VA, Ubuntu 22.04, Standard, and the cheapest option CPX11. I already had an ssh set up (for github, so I uploaded the public key to Hetzner and used that).
 
 ![Hetzer create server page](/images/2022-06-10-hetzner.png)
+
 After you click "Create and Buy Now", your server will take a few seconds to provision. Once it is done provisioning, take note of the IP address. We will use it later.
 
 ## Setup DNS
 
-This could really be done at the end, but since DNS propagation could take some time, better to just get it out of the way early. Since I already own `josephlozano.dev`, I am just going to use a subdomain `saas.josephlozano.dev`. I use namecheap, so I am going to set up a A record, pointing `saas` to the IP address of my server from Hetzner.
+This could really be done at the end, but since DNS propagation could take some time, better to just get it out of the way early. Since I already own `josephlozano.dev` , I am just going to use a subdomain `saas.josephlozano.dev` . I use namecheap, so I am going to set up a A record, pointing `saas` to the IP address of my server from Hetzner.
 
 ## Setting up our user
 
@@ -35,14 +36,20 @@ ssh -i id_ed25519 root@5.161.109.211
 
 After this command, you will be in a terminal prompt on your production machine. To keep things simple, all console commands with begin with `# Your machine` or `# Prod machine`
 
-After we shell into the prod machine, we don't want to run things as root, so we create a `deployer` user, and add them to the `sudo` group.
+After we shell into the prod machine, we don't want to run things as root, so we create a `docker` user, and add them to the `sudo` group.
 
 ```language-shell
 # Prod machine
-adduser deployer # you will be prompted to pick a password.
-usermod -aG sudo deployer
+adduser docker # you will be prompted to pick a password.
+usermod -aG sudo docker
 exit # exit back to your machine
 ```
+
+<div class="not-prose my-8 w-full border-amber-400 border-8 py-2 px-1">
+  <span class="font-bold">Alert!</span>
+  <span class="">If you name the user something other than <code>docker</code>, you will have to add the user to the <code>docker</code> group. You can do this with the following snippet:</span>
+  <pre class="my-4 mx-2">usermod -aG docker $USER</pre>
+</div>
 
 ## Phoenix Application Set Up
 
@@ -66,7 +73,7 @@ Now here is the real magic.
 mix phx.gen.release --docker # 🤯
 ```
 
-This created a few files, the most important of which is the `Dockerfile`.
+This created a few files, the most important of which is the `Dockerfile` .
 
 Lets also create a file called `docker-compose.yaml`
 
@@ -115,16 +122,16 @@ Now, bring it all together on your development machine. Run `docker-compose up -
 
 ## Ready, Set, Deploy
 
-Now you can ssh into the production machine as `deployer`.
+Now you can ssh into the production machine as `docker`.
 
 ```language-shell
 # Your machine
 # you will be prompted for the user password you created earlier
-ssh deployer@5.161.109.211
+ssh docker@5.161.109.211
 ```
 
 ```language-shell
-# Prod machine (as deployer)
+# Prod machine (as docker)
 sudo apt update
 sudo apt install docker docker-compose
 # replace with the URL of your repo
@@ -132,15 +139,13 @@ git clone https://github.com/joseph-lozano/saas_starter
 cd saas_starter
 # create a .env file with secrets, just like on your machine
 vi .env # you can also use nano if you are not comfortable with vi
-# One last step before we can run docker is to add the current $USER to docker groups
-sudo usermod -aG docker $USER
 ```
 
 You will then have to log out and log back in
 After all that is done, just run
 
 ```language-shell
-# Prod machine (as deployer)
+# Prod machine (as docker)
 docker-compose up --build -d
 ```
 

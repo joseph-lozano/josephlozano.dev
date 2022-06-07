@@ -2,7 +2,12 @@
 // https://tailwindcss.com/docs/configuration
 const colors = require("tailwindcss/colors");
 module.exports = {
-  content: ["./js/**/*.js", "../lib/*_web.ex", "../lib/*_web/**/*.*ex"],
+  content: [
+    "./js/**/*.js",
+    "../lib/*_web.ex",
+    "../lib/*_web/**/*.*ex",
+    "../priv/posts/**/*.md",
+  ],
   theme: {
     extend: {
       fontFamily: {
