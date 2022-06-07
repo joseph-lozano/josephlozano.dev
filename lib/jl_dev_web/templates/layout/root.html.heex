@@ -19,10 +19,13 @@
   <body class="min-h-screen flex flex-col bg-gradient-to-br from-secondary-100 to-primary-50 dark:from-secondary-900 dark:to-primary-900">
     <.header />
     <%= @inner_content %>
-  <footer>
-  <div class="flex justify-around py-6 text-gray-600">
-    <%= link "Source", to: "https://github.com/joseph-lozano/josephlozano.dev", class: "hover:underline text-primary-500 font-mono font-bold" %>
-    </div>
-  </footer>
+    <footer>
+      <div class="flex justify-around py-6 text-gray-600">
+        <%= link("Source",
+          to: "https://github.com/joseph-lozano/josephlozano.dev",
+          class: "hover:underline text-primary-500 font-mono font-bold"
+        ) %>
+      </div>
+    </footer>
   </body>
 </html>
