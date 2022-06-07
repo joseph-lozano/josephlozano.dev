@@ -1,0 +1,19 @@
+<div class="flex justify-center">
+  <ul role="list" class="divide-y divide-gray-200">
+    <%= for post <- @posts do %>
+      <li class="py-4 max-w-xl mx-3">
+        <%= link to: Routes.blog_path(@conn, :show, post) do %>
+          <div class="flex space-x-3">
+            <div class="flex-1 space-y-1">
+              <div class="flex items-center justify-between">
+                <h3 class="text-xl font-medium"><%= post.title %></h3>
+                <p class="text-gray-500">1h</p>
+              </div>
+              <p class="text-gray-500"><%= post.description %></p>
+            </div>
+          </div>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</div>

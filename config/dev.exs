@@ -49,7 +49,8 @@ config :jl_dev, JLDevWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
-      ~r"lib/jl_dev_web/(live|views)/.*(ex)$",
+      ~r"priv/posts/.*/.*md$",
+      ~r"lib/jl_dev_web/(live|views|components)/.*(ex)$",
       ~r"lib/jl_dev_web/templates/.*(eex)$"
     ]
   ]

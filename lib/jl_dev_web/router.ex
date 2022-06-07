@@ -18,6 +18,8 @@ defmodule JLDevWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/blog", BlogController, :index
+    get "/blog/:slug", BlogController, :show
   end
 
   # Other scopes may use custom stacks.

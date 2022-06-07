@@ -43,7 +43,11 @@ defmodule JLDev.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:tailwind, "~> 0.1", runtime: Mix.env() == :dev}
+      {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
+      {:nimble_publisher,
+       git: "https://github.com/dashbitco/nimble_publisher.git",
+       ref: "abee26e755c6dc638341869f090bc1d63c690f3f"},
+      {:yaml_elixir, "~> 2.9"}
     ]
   end
 
