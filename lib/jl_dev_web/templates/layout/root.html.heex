@@ -16,8 +16,13 @@
     </script>
     <link rel="stylesheet" href="https://unpkg.com/dracula-prism/dist/css/dracula-prism.min.css" />
   </head>
-  <body class="min-h-screen bg-gradient-to-tr from-secondary-100 to-primary-50 dark:from-secondary-800 dark:to-primary-800">
+  <body class="min-h-screen flex flex-col bg-gradient-to-tr from-secondary-100 to-primary-50 dark:from-secondary-800 dark:to-primary-800">
     <.header />
     <%= @inner_content %>
+  <footer>
+  <div class="flex justify-around py-6 text-gray-600">
+    <%= link "Source", to: "https://github.com/joseph-lozano/josephlozano.dev", class: "hover:underline text-primary-500 font-mono font-bold" %>
+    </div>
+  </footer>
   </body>
 </html>
