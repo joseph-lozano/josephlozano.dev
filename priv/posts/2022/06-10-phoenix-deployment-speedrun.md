@@ -42,6 +42,10 @@ After we shell into the prod machine, we don't want to run things as root, so we
 # Prod machine
 adduser docker # you will be prompted to pick a password.
 usermod -aG sudo docker
+su - docker # switch to the docker user
+sudo apt update
+sudo apt install docker docker-compose
+exit # logout of the docker user back to root
 exit # exit back to your machine
 ```
 
@@ -132,8 +136,6 @@ ssh docker@5.161.109.211
 
 ```language-shell
 # Prod machine (as docker)
-sudo apt update
-sudo apt install docker docker-compose
 # replace with the URL of your repo
 git clone https://github.com/joseph-lozano/saas_starter
 cd saas_starter
