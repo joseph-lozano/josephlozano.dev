@@ -47,7 +47,8 @@ defmodule JLDev.MixProject do
       {:nimble_publisher,
        git: "https://github.com/dashbitco/nimble_publisher.git",
        ref: "abee26e755c6dc638341869f090bc1d63c690f3f"},
-      {:yaml_elixir, "~> 2.9"}
+      {:yaml_elixir, "~> 2.9"},
+      {:atomex, "~> 0.5"}
     ]
   end
 

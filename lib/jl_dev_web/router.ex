@@ -19,6 +19,7 @@ defmodule JLDevWeb.Router do
 
     get "/", PageController, :index
     get "/blog", BlogController, :index
+    get "/blog/feed", BlogController, :feed
     get "/blog/:slug", BlogController, :show
   end
 

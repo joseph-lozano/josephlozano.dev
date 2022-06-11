@@ -10,4 +10,12 @@ defmodule JLDevWeb.BlogController do
     post = Blog.get_post(id)
     render(conn, "show.html", post: post)
   end
+
+  def feed(conn, _) do
+    feed = Blog.feed()
+
+    conn
+    |> put_resp_content_type("application/atom+xml")
+    |> send_resp(200, feed)
+  end
 end
