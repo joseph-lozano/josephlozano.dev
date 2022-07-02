@@ -7,23 +7,34 @@ _Part 1 in the Phoenix SaaS series_
 
 # Speedrunning a Phoenix Elixir Deployment to production (without a PaaS)
 
-There are many great Platform as a Service (PaaS) providers for Phoenix. [Render](https://render.com/docs/deploy-phoenix), and [Fly.io](https://fly.io/docs/getting-started/elixir/) especially, and they have great documentation for getting up and running. PaaS providers have lots of benefits, including ease of deployments, managed databases with automatic backups, and more. But using a plain Virtual Private Server (VPS) can get you more power for a lot less money. This is especailly true if you are running multiple apps.
+There are many great Platform as a Service (PaaS) providers for Phoenix. [Render](https://render.com/docs/deploy-phoenix), and [Fly.io](https://fly.io/docs/getting-started/elixir/) especially, and they have great documentation for getting up and running.
+PaaS providers have lots of benefits, including ease of deployments, managed databases with automatic backups, and more.
+But using a plain Virtual Private Server (VPS) can get you more power for a lot less money.
+This is especailly true if you are running multiple apps.
 
-In this post, we are going to go from (almost) zero to deployment using Hetzner, but you can follow along using other cloud providers, such as [Linode](https://linode.com), [Digital Ocean](https://digitalocean.com), or even AWS or GCP. I chose Hetzner for their great reviews, and low price.
+In this post, we are going to go from (almost) zero to deployment using Hetzner, but you can follow along using other cloud providers, such as [Linode](https://linode.com), [Digital Ocean](https://digitalocean.com), or even AWS or GCP.
+I chose Hetzner for their great reviews, and low price.
 
-I am assuming familiarity with the command line and git. If you get stuck at point, just shoot me an [email](mailto:me@josephlozano.dev).
+I am assuming familiarity with the command line and git.
+If you get stuck at point, just shoot me an [email](mailto:me@josephlozano.dev).
 
 ## Get a server
 
-Create an account at https://cloud.hetzner.com, and create a server in a region near you. I chose Ashburn, VA, Ubuntu 22.04, Standard, and the cheapest option CPX11. I already had an ssh set up (for github, so I uploaded the public key to Hetzner and used that).
+Create an account at https://cloud.hetzner.com, and create a server in a region near you.
+I chose Ashburn, VA, Ubuntu 22.04, Standard, and the cheapest option CPX11.
+I already had an ssh set up (for github, so I uploaded the public key to Hetzner and used that).
 
 ![Hetzer create server page](/images/2022-06-10-hetzner.png)
 
-After you click "Create and Buy Now", your server will take a few seconds to provision. Once it is done provisioning, take note of the IP address. We will use it later.
+After you click "Create and Buy Now", your server will take a few seconds to provision.
+Once it is done provisioning, take note of the IP address.
+We will use it later.
 
 ## Setup DNS
 
-This could really be done at the end, but since DNS propagation could take some time, better to just get it out of the way early. Since I already own `josephlozano.dev` , I am just going to use a subdomain `saas.josephlozano.dev` . I use namecheap, so I am going to set up a A record, pointing `saas` to the IP address of my server from Hetzner.
+This could really be done at the end, but since DNS propagation could take some time, better to just get it out of the way early.
+Since I already own `josephlozano.dev` , I am just going to use a subdomain `saas.josephlozano.dev`.
+I use namecheap, so I am going to set up a A record, pointing `saas` to the IP address of my server from Hetzner.
 
 ## Setting up our user
 
@@ -34,7 +45,8 @@ This could really be done at the end, but since DNS propagation could take some 
 ssh -i id_ed25519 root@5.161.109.211
 ```
 
-After this command, you will be in a terminal prompt on your production machine. To keep things simple, all console commands with begin with `# Your machine` or `# Prod machine`
+After this command, you will be in a terminal prompt on your production machine.
+To keep things simple, all console commands with begin with `# Your machine` or `# Prod machine`
 
 After we shell into the prod machine, we don't want to run things as root, so we create a `docker` user, and add them to the `sudo` group.
 
@@ -100,7 +112,10 @@ volumes:
   postgres: {}
 ```
 
-Also, create a `.env` file, which will hold your applicaton secrets. **Make sure you add this file to `.gitignore`**. You can generate a secret key base with `mix phx.gen.secret`. Since this file is ignored by git, you'll want to add it (with different secrets) to both your development machine, and the prod machine.
+Also, create a `.env` file, which will hold your applicaton secrets.
+**Make sure you add this file to `.gitignore`**.
+You can generate a secret key base with `mix phx.gen.secret`.
+Since this file is ignored by git, you'll want to add it (with different secrets) to both your development machine, and the prod machine.
 
 ```language-shell
 # .env
@@ -122,7 +137,9 @@ git commit -m "Dockerize"
 git push
 ```
 
-Now, bring it all together on your development machine. Run `docker-compose up --build`. Because we are forwarding port 4000 from Docker, we just visit https://localhost:4000 to see our app running in Docker.
+Now, bring it all together on your development machine.
+Run `docker-compose up --build`.
+Because we are forwarding port 4000 from Docker, we just visit https://localhost:4000 to see our app running in Docker.
 
 ## Ready, Set, Deploy
 
@@ -143,7 +160,7 @@ cd saas_starter
 vi .env # you can also use nano if you are not comfortable with vi
 ```
 
-You will then have to log out and log back in
+You will then have to log out and log back in.
 After all that is done, just run
 
 ```language-shell
@@ -151,7 +168,10 @@ After all that is done, just run
 docker-compose up --build -d
 ```
 
-Now your app is officially running in production! The last step is set up a reverse proxy. Because our app is running on port 4000, a reverse proxy will direct traffic from outside our production machine (aka from the internet) to our application. For this, we will use [Caddy](https://caddyserver.com)
+Now your app is officially running in production!
+The last step is set up a reverse proxy.
+Because our app is running on port 4000, a reverse proxy will direct traffic from outside our production machine (aka from the internet) to our application.
+For this, we will use [Caddy](https://caddyserver.com)
 
 > Caddy 2 is a powerful, enterprise-ready, open source web server with automatic HTTPS written in Go
 
